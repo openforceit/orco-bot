@@ -1,8 +1,10 @@
 ####################
 Openforce GitHub bot
 ####################
+
 .. _OCA/oca-github-bot: https://github.com/OCA/oca-github-bot
-### Forked from `OCA/oca-github-bot`_
+Forked from `OCA/oca-github-bot`_
+---------------------------------
 
 
 The goal of this project is to collect in one place:
