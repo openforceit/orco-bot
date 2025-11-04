@@ -68,7 +68,7 @@ def temporary_clone(org, repo, branch):
     if not os.path.isdir(repo_cache_dir):
         os.makedirs(repo_cache_dir)
         check_call(["git", "init", "--bare"], cwd=repo_cache_dir)
-    repo_url = f"https://github.com/{org}/{repo}"
+    # repo_url = f"https://github.com/{org}/{repo}"
     repo_url_with_token = f"https://{config.GITHUB_TOKEN}@github.com/{org}/{repo}"
     # fetch all branches into cache
     fetch_cmd = [
@@ -77,7 +77,7 @@ def temporary_clone(org, repo, branch):
         "--quiet",
         "--force",
         "--prune",
-        repo_url,
+        repo_url_with_token,
         "refs/heads/*:refs/heads/*",
     ]
     retry_on_exception(
@@ -102,7 +102,7 @@ def temporary_clone(org, repo, branch):
             "--branch",
             branch,
             "--",
-            repo_url,
+            repo_url_with_token,
             tempdir,
         ]
         check_call(clone_cmd, cwd=".")
