@@ -1,13 +1,9 @@
-##############
-OCA GitHub bot
-##############
+####################
+Openforce GitHub bot
+####################
+.. _OCA/oca-github-bot: https://github.com/OCA/oca-github-bot
+### Forked from `OCA/oca-github-bot`_
 
-.. image:: https://results.pre-commit.ci/badge/github/OCA/oca-github-bot/master.svg
-   :target: https://results.pre-commit.ci/latest/github/OCA/oca-github-bot/master
-   :alt: pre-commit.ci status
-.. image:: https://github.com/OCA/oca-github-bot/actions/workflows/ci.yml/badge.svg
-   :target: https://github.com/OCA/oca-github-bot/actions/workflows/ci.yml
-   :alt: GitHub CI status
 
 The goal of this project is to collect in one place:
 
@@ -237,12 +233,4 @@ Contributors
 Maintainers
 ===========
 
-This module is maintained by the OCA.
-
-.. image:: https://odoo-community.org/logo.png
-   :alt: Odoo Community Association
-   :target: https://odoo-community.org
-
-OCA, or the Odoo Community Association, is a nonprofit organization whose
-mission is to support the collaborative development of Odoo features and
-promote its widespread use.
+Openforce DevOps Team
