@@ -3,7 +3,7 @@
 
 import pytest
 
-from oca_github_bot.version_branch import (
+from orco_bot.version_branch import (
     is_main_branch_bot_branch,
     is_merge_bot_branch,
     is_protected_branch,

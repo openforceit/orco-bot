@@ -5,7 +5,7 @@ import subprocess
 
 import pytest
 
-from oca_github_bot.manifest import user_can_push
+from orco_bot.manifest import user_can_push
 
 from .common import commit_addon, make_addon
 

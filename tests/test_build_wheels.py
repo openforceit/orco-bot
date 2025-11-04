@@ -7,11 +7,11 @@ import textwrap
 
 import pytest
 
-from oca_github_bot.build_wheels import (
+from orco_bot.build_wheels import (
     build_and_publish_metapackage_wheel,
     build_and_publish_wheels,
 )
-from oca_github_bot.pypi import RsyncDistPublisher
+from orco_bot.pypi import RsyncDistPublisher
 
 
 def _init_git_repo(cwd):

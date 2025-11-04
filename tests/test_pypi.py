@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from oca_github_bot.pypi import TwineDistPublisher, exists_on_index
+from orco_bot.pypi import TwineDistPublisher, exists_on_index
 
 
 @pytest.mark.parametrize(

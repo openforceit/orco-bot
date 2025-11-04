@@ -5,7 +5,7 @@ import re
 import subprocess
 from pathlib import Path
 
-from oca_github_bot.github import (
+from orco_bot.github import (
     git_commit_if_needed,
     git_get_current_branch,
     git_get_head_sha,

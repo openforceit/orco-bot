@@ -81,7 +81,7 @@ Commands
 One can ask the bot to perform some tasks by entering special commands
 as merge request comments.
 
-``/ocabot merge`` followed by one of ``major``, ``minor``, ``patch`` or ``nobump``
+``/orcobot merge`` followed by one of ``major``, ``minor``, ``patch`` or ``nobump``
 can be used to ask the bot to do the following:
 
 * merge the PR onto a temporary branch created off the target branch
@@ -92,11 +92,11 @@ can be used to ask the bot to do the following:
 * when the version was bumped, generate a wheel, rsync it to a PEP 503
   simple index root, or upload it to one or more indexes with twine
 
-``/ocabot rebase`` can be used to ask the bot to do the following:
+``/orcobot rebase`` can be used to ask the bot to do the following:
 
 * rebase the PR on the target branch
 
-``/ocabot migration``, followed by the module name, performing the following:
+``/orcobot migration``, followed by the module name, performing the following:
 
 * Look for an issue in that repository with the name "Migration to version
   ``{version}``", where ``{version}`` is the name of the target branch.
@@ -117,16 +117,16 @@ Developing new features
 
 The easiest is to look at examples.
 
-New webhooks are added in the `webhooks <./src/oca_github_bot/webhooks>`_ directory.
+New webhooks are added in the `webhooks <./src/orco_bot/webhooks>`_ directory.
 Webhooks execution time must be very short and they should
 delegate the bulk of their work as delayed tasks, which have
 the benefit of not overloading the machine and having proper
 error handling and monitoring.
 
-Tasks are in the `tasks <./src/oca_github_bot/tasks>`_ directory. They are `Celery tasks
+Tasks are in the `tasks <./src/orco_bot/tasks>`_ directory. They are `Celery tasks
 <http://docs.celeryproject.org/en/latest/userguide/tasks.html>`_.
 
-Tasks can be scheduled, in `cron.py <./src/oca_github_bot/cron.py>`_, using the `Celery periodic tasks
+Tasks can be scheduled, in `cron.py <./src/orco_bot/cron.py>`_, using the `Celery periodic tasks
 <http://docs.celeryproject.org/en/latest/userguide/periodic-tasks.html>`_ mechanism.
 
 Running it
@@ -203,8 +203,8 @@ Here is a recommended procedure to test locally:
 
 * Then you can debug the two processes in your favorite IDE:
 
-  - the webhook server: ``python -m oca_github_bot``
-  - the task worker: ``python -m celery --app=oca_github_bot.queue.app  worker --pool=solo --loglevel=INFO``
+  - the webhook server: ``python -m orco_bot``
+  - the task worker: ``python -m celery --app=orco_bot.queue.app  worker --pool=solo --loglevel=INFO``
 
 * To expose the webhook server on your local machine to internet,
   you can use `ngrok <https://ngrok.com/>`_

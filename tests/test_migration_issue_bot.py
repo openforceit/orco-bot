@@ -3,7 +3,7 @@
 
 import pytest
 
-from oca_github_bot.tasks.migration_issue_bot import (
+from orco_bot.tasks.migration_issue_bot import (
     _check_line_issue,
     _create_or_find_branch_milestone,
     _find_issue,
