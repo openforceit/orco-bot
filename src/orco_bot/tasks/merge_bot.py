@@ -11,6 +11,7 @@ from ..config import (
     GITHUB_CHECK_SUITES_IGNORED,
     GITHUB_STATUS_IGNORED,
     MERGE_BOT_INTRO_MESSAGES,
+    SIMPLE_INDEX_ROOT,
     dist_publisher,
     switchable,
 )
@@ -142,19 +143,20 @@ def _merge_bot_merge_pr(org, repo, merge_bot_branch, cwd, dry_run=False):
         d for d in modified_addon_dirs if is_addon_dir(d, installable_only=True)
     ]
 
+    # FIXME We don't use HISTORY.rst file to track changelog, avoid this part
     # Update HISTORY.rst using towncrier, before generating README.rst.
     # We don't do this if nobump is specified, because updating the changelog
     # is something we only do when "releasing", and patch|minor|major is
     # the way to mean "release" in OCA.
-    if bumpversion_mode != "nobump":
-        _merge_bot_towncrier(
-            org,
-            repo,
-            target_branch,
-            modified_installable_addon_dirs,
-            bumpversion_mode,
-            cwd,
-        )
+    # if bumpversion_mode != "nobump":
+    #     _merge_bot_towncrier(
+    #         org,
+    #         repo,
+    #         target_branch,
+    #         modified_installable_addon_dirs,
+    #         bumpversion_mode,
+    #         cwd,
+    #     )
 
     # bump manifest version of modified installable addons
     if bumpversion_mode != "nobump":
@@ -177,12 +179,13 @@ def _merge_bot_merge_pr(org, repo, merge_bot_branch, cwd, dry_run=False):
         check_call(["git", "reset", "--soft", head_sha], cwd=cwd)
         check_call(["git", "commit", "-m", "[BOT] post-merge updates"], cwd=cwd)
 
-    # We publish to PyPI before merging, because we don't want to merge
-    # if PyPI rejects the upload for any reason. There is a possibility
-    # that the upload succeeds and then the merge fails, but that should be
-    # exceptional, and it is better than the contrary.
-    for addon_dir in modified_installable_addon_dirs:
-        build_and_publish_wheel(addon_dir, dist_publisher, dry_run)
+    if SIMPLE_INDEX_ROOT:
+        # We publish to PyPI before merging, because we don't want to merge
+        # if PyPI rejects the upload for any reason. There is a possibility
+        # that the upload succeeds and then the merge fails, but that should be
+        # exceptional, and it is better than the contrary.
+        for addon_dir in modified_installable_addon_dirs:
+            build_and_publish_wheel(addon_dir, dist_publisher, dry_run)
 
     if dry_run:
         _logger.info(f"DRY-RUN git push in {org}/{repo}@{target_branch}")
@@ -293,16 +296,33 @@ def merge_bot_start(
                 # push and let tests run again; delete on origin
                 # to be sure GitHub sees it as a new branch and relaunches all checks
                 _git_delete_branch("origin", merge_bot_branch, cwd=clone_dir)
-                check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
-                if not intro_message:
-                    intro_message = _get_merge_bot_intro_message()
-                github.gh_call(
-                    gh_pr.create_comment,
-                    f"{intro_message}\n"
-                    f"Prepared branch [{merge_bot_branch}]"
-                    f"(https://github.com/{org}/{repo}/commits/{merge_bot_branch}), "
-                    f"awaiting test results.",
+                if not gh.branch(merge_bot_branch):
+                    check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
+
+                # OF Override >>>
+                # FIXME This triggers a fake green light only to trigger the
+                # webhook(s) that actually do the real merge. This should be
+                # replaced by a proper test-(check)-suite that actually does
+                # something purposeful
+                sha = gh_pr.repository.branch(merge_bot_branch).latest_sha()
+                repository = gh.repository(org, repo)
+                repository.create_status(
+                    sha,
+                    'success',
+                    description='Fake green from Orcobot'
                 )
+                # Actually we don't have a test / check suite; so waitng test
+                # test results, is not needed
+                # if not intro_message:
+                #     intro_message = _get_merge_bot_intro_message()
+                # github.gh_call(
+                #     gh_pr.create_comment,
+                #     f"{intro_message}\n"
+                #     f"Prepared branch [{merge_bot_branch}]"
+                #     f"(https://github.com/{org}/{repo}/commits/{merge_bot_branch}), "
+                #     f"awaiting test results.",
+                # )
+                # <<< OF Override
         except CalledProcessError as e:
             cmd = cmd_to_str(e.cmd)
             github.gh_call(
@@ -357,6 +377,7 @@ def _get_commit_success(org, repo, pr, gh_commit):
             )
             return False
     gh_check_suites = github.gh_call(gh_commit.check_suites)
+
     for check_suite in gh_check_suites:
         if check_suite.app.name in GITHUB_CHECK_SUITES_IGNORED:
             # ignore
@@ -407,10 +428,15 @@ def merge_bot_status(org, repo, merge_bot_branch, sha):
                 return
             pr, _, username, _ = parse_merge_bot_branch(merge_bot_branch)
             with github.login() as gh:
-                gh_repo = gh.repository(org, repo)
+                # OF Override >>>
+                # gh_repo = gh.repository(org, repo)
                 gh_pr = gh.pull_request(org, repo, pr)
-                gh_commit = github.gh_call(gh_repo.commit, sha)
-                success = _get_commit_success(org, repo, pr, gh_commit)
+                # gh_commit = github.gh_call(gh_repo.commit, sha)
+                # success = _get_commit_success(org, repo, pr, gh_commit)
+                # FIXME actually we don't use test / checksuites, return to
+                # original behavior if these are implemented
+                success = True
+                # <<< OF Override
                 if success is None:
                     # checks in progress
                     return
