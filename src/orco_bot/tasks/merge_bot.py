@@ -296,8 +296,7 @@ def merge_bot_start(
                 # push and let tests run again; delete on origin
                 # to be sure GitHub sees it as a new branch and relaunches all checks
                 _git_delete_branch("origin", merge_bot_branch, cwd=clone_dir)
-                if not gh.branch(merge_bot_branch):
-                    check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
+                check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
 
                 # OF Override >>>
                 # FIXME This triggers a fake green light only to trigger the
