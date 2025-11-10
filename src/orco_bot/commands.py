@@ -80,9 +80,16 @@ class BotCommandMerge(BotCommand):
 
     def parse_options(self, options):
         if not options:
-            raise RequiredOptionError(
-                self.name, "bumpversion_mode", self.bumpversion_mode_list
-            )
+            # OF Override >>>
+            # Keep old behavior to avoid pass nobump
+            if isinstance(options, list):
+                options.extend(["nobump"])
+            else:
+                options = ["nobump"]
+            # raise RequiredOptionError(
+            #     self.name, "bumpversion_mode", self.bumpversion_mode_list
+            # )
+            # <<< OF Override
         if len(options) == 1 and options[0] in self.bumpversion_mode_list:
             self.bumpversion_mode = options[0]
         else:
