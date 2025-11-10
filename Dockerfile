@@ -41,19 +41,19 @@ RUN set -x \
 
 # isolate from system python libraries
 RUN set -x \
-  && python${PY} -m venv /opt/orco-bot \
-  && /opt/orco-bot/bin/pip install --no-cache-dir -U pip wheel
-ENV PATH=/opt/orco-bot/bin:$PATH
+  && python${PY} -m venv /app \
+  && /app/bin/pip install --no-cache-dir -U pip wheel
+ENV PATH=/app/bin:$PATH
 
 # install orco_bot dependencies, in a separate layer for improved caching
 COPY requirements.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 # install orco_bot app
-COPY . /opt/orco-bot
-RUN pip install --no-cache-dir -e /opt/orco-bot
+COPY . /app
+RUN pip install --no-cache-dir -e /app
 
 # make work and home directory
-RUN mkdir /opt/orco-bot/run && chmod ogu+rwx /opt/orco-bot/run
-ENV HOME=/opt/orco-bot/run
-WORKDIR /opt/orco-bot/run
+RUN mkdir /app/run && chmod ogu+rwx /app/run
+ENV HOME=/app/run
+WORKDIR /app/run
