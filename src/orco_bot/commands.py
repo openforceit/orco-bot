@@ -128,6 +128,9 @@ class BotCommandMigrationIssue(BotCommand):
 
 def parse_commands(text):
     """Parse a text and return an iterator of BotCommand objects."""
+    if not text:
+        return
+
     for mo in BOT_COMMAND_RE.finditer(text):
         if mo and mo.group("options"):
             cmd_options = mo.group("options").strip().split()
