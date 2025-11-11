@@ -297,11 +297,6 @@ def merge_bot_start(
                     merge_strategy,
                     cwd=clone_dir,
                 )
-                # push and let tests run again; delete on origin
-                # to be sure GitHub sees it as a new branch and relaunches all checks
-                _git_delete_branch("origin", merge_bot_branch, cwd=clone_dir)
-                check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
-
                 # OF Override >>>
                 # FIXME This triggers a fake green light only to trigger the
                 # webhook(s) that actually do the real merge. This should be
@@ -314,6 +309,14 @@ def merge_bot_start(
                     'success',
                     description='Fake green from Orcobot'
                 )
+                # <<< OF Override
+
+                # push and let tests run again; delete on origin
+                # to be sure GitHub sees it as a new branch and relaunches all checks
+                _git_delete_branch("origin", merge_bot_branch, cwd=clone_dir)
+                check_call(["git", "push", "origin", merge_bot_branch], cwd=clone_dir)
+
+                # OF Override >>>
                 # Actually we don't have a test / check suite; so waitng test
                 # test results, is not needed
                 # if not intro_message:
