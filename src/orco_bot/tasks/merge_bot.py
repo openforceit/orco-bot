@@ -169,9 +169,13 @@ def _merge_bot_merge_pr(org, repo, merge_bot_branch, cwd, dry_run=False):
 
     # run the main branch bot actions only if there are modified addon directories,
     # so we don't run them when the merge bot branch for non-addons repos
-    if modified_addon_dirs:
-        # this includes setup.py and README.rst generation
-        main_branch_bot_actions(org, repo, target_branch, cwd=cwd)
+    # OF Override >>>
+    # Don't distribute customization addons, avoid to create python wheel
+    # package and README.rst
+    # if modified_addon_dirs:
+    #     # this includes setup.py and README.rst generation
+    #     main_branch_bot_actions(org, repo, target_branch, cwd=cwd)
+    # <<< OF Override
 
     # squash post merge commits into one (bumpversion, readme generator, etc),
     # to avoid a proliferation of automated actions commits
